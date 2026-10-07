@@ -1,47 +1,49 @@
-name: Build APK
+name: Build Android APK
 
 on:
   push:
-    branches: [main, master]
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: 22
-          cache: npm
+          node-version: 18
+          cache: 'npm'
 
-      - uses: actions/setup-java@v4
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build Web Assets
+        run: npm run build
+
+      - name: Sync Capacitor Android
+        run: npx cap sync android
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4
         with:
-          distribution: temurin
-          java-version: 21
+          distribution: 'zulu'
+          java-version: '17'
 
-      - run: npm ci
-      - run: npm run build
-      - run: npx cap sync android
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
 
-      - name: Prepare signing key
-        env:
-          KEYSTORE_BASE64: ${{ secrets.MOVES_KEYSTORE_BASE64 }}
+      - name: Build Android APK
         run: |
-          if [ -z "$KEYSTORE_BASE64" ]; then echo "::error::Secret KEYSTORE_BASE64 is missing"; exit 1; fi
-          echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/moves-release.p12"
-          echo "KEYSTORE_PATH=$RUNNER_TEMP/moves-release.p12" >> "$GITHUB_ENV"
-
-      - name: Build signed release APK
-        working-directory: android
-        env:
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-        run: |
+          cd android
           chmod +x gradlew
           ./gradlew assembleRelease
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
         with:
-          name: moves-app-apk
-          path: android/app/build/outputs/apk/release/app-release.apk
+          name: moves-app-release-apk
+          path: android/app/build/outputs/apk/release/app-release-unsigned.apk
