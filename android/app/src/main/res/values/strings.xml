@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">إدارة النقلات</string>
+    <string name="title_activity_main">إدارة النقلات</string>
+    <string name="package_name">com.moves.app</string>
+    <string name="custom_url_scheme">com.moves.app</string>
+</resources>

@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+@theme {
+  --color-cream: #fbf7ee;
+  --color-brand: #0f766e;
+  --color-brand-dark: #0b5a54;
+  --color-gold: #c9a227;
+  --color-ink: #2b2b2b;
+  --font-sans: "Amiri", "Segoe UI", serif;
+}
+
+body { background: var(--color-cream); color: var(--color-ink); font-size: 18px; }
+
+@layer components {
+  .card { @apply bg-white border border-gold/40 rounded-xl p-5 shadow-sm; }
+  .input { @apply w-full min-h-12 px-3 border border-gray-300 rounded-lg bg-white focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/30; }
+  .btn-main { @apply min-h-12 px-5 rounded-lg font-bold cursor-pointer bg-brand text-white hover:bg-brand-dark; }
+  .btn-gold { @apply min-h-12 px-5 rounded-lg font-bold cursor-pointer bg-gold text-white hover:opacity-90; }
+  .btn-light { @apply min-h-12 px-5 rounded-lg font-bold cursor-pointer bg-white border border-brand text-brand hover:bg-brand/5; }
+  .btn-danger { @apply min-h-12 px-5 rounded-lg font-bold cursor-pointer bg-white border border-red-600 text-red-700 hover:bg-red-50; }
+}
